@@ -7,6 +7,7 @@ use LWP::UserAgent;
 use Digest::MD5 'md5';
 use Storable qw( retrieve nstore );
 use Encode;
+use Fcntl qw(:flock);
 
 my $MAXITEMS = 500;
 my $MAXFILES = 9;
@@ -366,7 +367,9 @@ chdir $ARGV[0] or die "chdir @ARGV: $!";
 
 my $TMP = 'index.html.tmp';
 
-die "$TMP already exists" if -f $TMP;
+open(my $lock, ">", "lock") or die "Cannot create lockfile";
+flock $lock, LOCK_EX|LOCK_NB
+    or die "Another instance of this program is already running";
 
 $data = eval { retrieve ('rss.data') };
 warn "no data found: error '$@' - will use empty\n" if $@;
@@ -384,3 +387,5 @@ rename 'rss.data.tmp', 'rss.data' or die "rename rss.data.tmp: $!";
 rename "$_.html", ($_ + 1) . '.html' for reverse 1 .. $MAXFILES - 1;
 rename 'index.html', '1.html';
 rename $TMP, 'index.html' or die "rename $TMP: $!";
+
+flock $lock, LOCK_UN;
