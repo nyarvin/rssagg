@@ -24,6 +24,9 @@ sub print_head {
 	print $html_fh <<HTML;
 <html><head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+    .floatstop { clear:both }
+</style>
 <title>$TITLE</title></head><body>
 <p>Generated at ${\scalar localtime}.  Older files: ${
 	\join ', ', map qq|<a href="$_.html">$_</a>|, 1 .. $MAXFILES
@@ -56,7 +59,7 @@ HTML
 			$cb++;
 		}
 		print $html_fh <<HTML;
-<hr><p><b>$feed->{line}. <a href="$feed->{link}">$feed->{title}</a></b>$err</p>
+<hr class="floatstop"><p><b>$feed->{line}. <a href="$feed->{link}">$feed->{title}</a></b>$err</p>
 <blockquote>
 HTML
 		for my $item (@{ $feed->{item} }) {
