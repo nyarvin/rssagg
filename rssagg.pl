@@ -311,6 +311,7 @@ sub get_feed {
 	my $res = eval {
 		local $SIG{ALRM} = sub { die 'timeout' };
 		alarm 10;
+		print $feed->{url}, "\n" if -t;
 		$ua->get ($feed->{url}, @hdr);
 	};
 	if ($@) {
@@ -318,8 +319,6 @@ sub get_feed {
 		$res ||= HTTP::Response->new (500, 'Timeout');
 	}
 	alarm 0;
-
-	$|++, print "." if -t;
 
 	if ($res->code == RC_OK) {
 		my $xml = $res->content;
