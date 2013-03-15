@@ -365,6 +365,8 @@ sub process_list {
 die "usage: $0 <dir>\n" if @ARGV != 1;
 chdir $ARGV[0] or die "chdir @ARGV: $!";
 
+binmode STDOUT, ":utf8";
+
 my $TMP = 'index.html.tmp';
 
 open(my $lock, ">", "lock") or die "Cannot create lockfile";
