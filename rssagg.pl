@@ -374,7 +374,7 @@ flock $lock, LOCK_EX|LOCK_NB
     or die "Another instance of this program is already running";
 
 $data = eval { retrieve ('rss.data') };
-warn "no data found: error '$@' - will use empty\n" if $@;
+warn "no data found: - will use empty;\n\t error was: $@" if $@;
 
 open $html_fh, '>:utf8', $TMP or die "open $TMP: $!";
 my $prev = select $html_fh; $|++; select $prev;
