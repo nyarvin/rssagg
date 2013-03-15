@@ -64,10 +64,14 @@ HTML
 <blockquote>
 HTML
 		for my $item (@{ $feed->{item} }) {
+			my $author_string = "";
+			if($item->{author}) {
+				$author_string = " / $item->{author}";
+			}
 			print $html_fh <<HTML;
 <p>(<a name="a$ca"></a><a
 href="#a@{[$ca - 1]}">^</a> <a href="#a@{[$ca + 1]}">v</a> <a
-href="#b$cb">V</a>) <a href="$item->{link}">$item->{title}</a></p>
+href="#b$cb">V</a>) <a href="$item->{link}">$item->{title}</a>$author_string</p>
 <blockquote><p>$item->{text}</p></blockquote>
 HTML
 			$ca++;
@@ -179,7 +183,7 @@ sub text_notag {
 	$txt
 }
 
-# item[]/(title/link/description)
+# item[]/(title/link/description/author)
 
 sub parse_items {
 	my ($ref, $tag) = @_;
@@ -195,6 +199,12 @@ sub parse_items {
 		$item{title} = text_notag (
 			xml_tag (\$item, 'title') ||
 			$item{link}
+		);
+		my $author_block = xml_tag(\$item, 'author') || "";
+		$item{author} = text_notag (
+			xml_tag(\$author_block,'name') ||
+			xml_tag(\$item, 'dc:creator') ||
+			""
 		);
 		$item{text}  = text_sane (
 			xml_tag (\$item, 'content') ||
