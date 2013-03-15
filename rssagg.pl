@@ -65,7 +65,7 @@ HTML
 		for my $item (@{ $feed->{item} }) {
 			print $html_fh <<HTML;
 <p>(<a name="a$ca"></a><a
-href="#a@{[$ca + 1]}">v</a><a href="#a@{[$ca - 1]}">^</a><a
+href="#a@{[$ca - 1]}">^</a> <a href="#a@{[$ca + 1]}">v</a> <a
 href="#b$cb">V</a>) <a href="$item->{link}">$item->{title}</a></p>
 <blockquote><p>$item->{text}</p></blockquote>
 HTML
