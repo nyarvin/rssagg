@@ -209,7 +209,7 @@ sub parse_items {
 		$item{text}  = text_sane (
 			xml_tag (\$item, 'content') ||
 			xml_tag (\$item, 'description') ||
-			$item{title}
+			""
 		);
 		push @item, \%item;
 	}
