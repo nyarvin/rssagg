@@ -29,6 +29,7 @@ sub print_head {
     .floatstop { clear:both }
 </style>
 <title>$TITLE</title></head><body>
+<div style="max-width:62em; margin-left:auto; margin-right:auto" >
 <p>Generated at ${\scalar localtime}.  Older files: ${
 	\join ', ', map qq|<a href="$_.html">$_</a>|, 1 .. $MAXFILES
 }.</p>
@@ -42,7 +43,7 @@ my $cb = 1;
 sub print_foot {
 	print $html_fh <<HTML
 <a name="a$ca"></a><a name="b$cb"></a>
-<hr><p><b>EOF.</b></p></body></html>
+<hr><p><b>EOF.</b></p></div></body></html>
 HTML
 }
 
