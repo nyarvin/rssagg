@@ -174,6 +174,7 @@ sub xml_decode {
 
 	$txt =~ s/&([a-z]+);/ $entity{$1} || $& /eg if $txt !~ /[<>]/;
 	$txt =~ s/&#([0-9]+);/ chr $1 /eg;
+	$txt =~ s/&#x([0-9A-Fa-f]+);/ chr(hex $1) /eg;
 
 	return $txt;
 }
