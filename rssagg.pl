@@ -155,7 +155,7 @@ sub xml_must {
 sub xml_link_href {
 	my ($ref) = @_;
 
-	$$ref =~ m# < link \b [^>]* \b href=["']([^"']*)["'] ([^/>]*) / \s* > #six ?
+	$$ref =~ m# < link \b [^>]* \b href=["']([^"']*)["'] ([^>]*) > #six ?
 		$1 : undef;
 }
 
