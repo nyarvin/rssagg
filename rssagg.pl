@@ -2,6 +2,7 @@
 
 use warnings;
 use strict;
+use feature "state";
 use HTTP::Status;
 use LWP::UserAgent;
 use Digest::MD5 'md5';
@@ -65,15 +66,22 @@ HTML
 <blockquote>
 HTML
 		for my $item (@{ $feed->{item} }) {
-			my $author_string = "";
-			if($item->{author}) {
-				$author_string = " / $item->{author}";
+			my $title = $item->{title};
+			my $author = $item->{author};
+			my $link = $item->{link};
+			my $text = $item->{text};
+##			print "Condition: $feed->{condition}\n";
+			if ($feed->{condition} && !eval($feed->{condition})) {
+				print "Error evaluating condition: $@" if $@;
+				next;
 			}
+			my $author_string = "";
+			$author_string = " / $author" if $author;
 			print $html_fh <<HTML;
 <p>(<a name="a$ca"></a><a
 href="#a@{[$ca - 1]}">^</a> <a href="#a@{[$ca + 1]}">v</a> <a
-href="#b$cb">V</a>) <a href="$item->{link}">$item->{title}</a>$author_string</p>
-<blockquote><p>$item->{text}</p></blockquote>
+href="#b$cb">V</a>) <a href="$link">$title</a>$author_string</p>
+<blockquote><p>$text</p></blockquote>
 HTML
 			$ca++;
 		}
@@ -352,23 +360,47 @@ sub get_feed {
 	$feed->{title} ||= $feed->{link} ||= $feed->{url};
 }
 
+sub process_url {
+	state $line;
+	my ($url,$condition) = @_;
+
+	$line++;
+	my $feed = {
+		url	  => $url,
+		line	  => $line,
+		data	  => ($data->{$url} ||= {}),
+		condition => $condition,
+	};
+	get_feed ($feed);
+	print_feed ($feed);
+}
+
 sub process_list {
 	open my $f, 'rss.list' or die "open rss.list: $!";
 	my %urls;
+	my $url;
+	my $condition="";
 	print_head ();
-	my $line;
-	for my $url (map /(\S+)/, <$f>) {
-		$line++;
-		warn ("rss.list: duplicated entry $url\n"), next
-			if $urls{$url}++;
-		my $feed = {
-			url	=> $url,
-			line	=> $line,
-			data	=> ($data->{$url} ||= {}),
-		};
-		get_feed ($feed);
-		print_feed ($feed);
+	while (<$f>) {
+		chomp;
+		if (/^\s+/) {
+			# this line is a condition on the last URL
+			$condition .= $_;
+		} elsif (/^\s*#/ or /^\s*$/) {
+			# a comment or a blank line
+			next;
+		} else {
+			# a URL.  First process the last URL, if any
+			process_url($url,$condition) if defined $url;
+			$condition = "";
+			$url = $_;
+			if ($urls{$url}++) {
+				warn ("rss.list: duplicated entry $url\n");
+				undef $url;
+			}
+		}
 	}
+	process_url($url,$condition) if defined $url;
 	print_foot ();
 	exists $urls{$_} || delete $data->{$_} for keys %$data;
 }
