@@ -202,8 +202,8 @@ sub parse_items {
 	while (my $item = xml_tag ($ref, $tag || 'item')) {
 		my %item;
 		$item{link}  = text_notag (
-			xml_tag (\$item, 'link') ||
 			xml_link_href (\$item) ||
+			xml_tag (\$item, 'link') ||
 			xml_must (\$item, 'guid')
 		);
 		$item{title} = text_notag (
