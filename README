@@ -1,13 +1,13 @@
-This is a simple RSS aggregator, written in perl.  It has a low number
-of CPAN dependencies, and produces a single html page of output.
+This is a simple RSS aggregator, written in Perl.  It has a low number
+of CPAN dependencies, and produces a single HTML page of output.
 
 Inputs:
-	rss.list - text file with one feed url per line, rss/rdf/atom are
+	rss.list - text file with one feed URL per line; RSS/RDF/Atom are
 	    supported.
 
 	    Comments can be included in the file: any line starting
 	    with a '#' is ignored.  (There can be whitespace before
-	    the '#'.)
+	    the '#'.)  Blank lines are likewise ignored.
 
 	    Also supported are conditions which must be satisfied for
 	    each article to be printed: the conditions for a URL
@@ -43,4 +43,4 @@ How to run:
 where <DIRECTORY> is where all the above files are located.
 
 When started from the terminal it prints each URL before it is fetched;
-otherwise it's silent (for cronjob).
+otherwise it's silent.
