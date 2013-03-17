@@ -1,18 +1,46 @@
-Simple RSS aggregator in perl
-- minimum CPAN dependencies
-- single html page of output
+This is a simple RSS aggregator, written in perl.  It has a low number
+of CPAN dependencies, and produces a single html page of output.
 
 Inputs:
-	rss.list - text file with feeds urls, rss/rdf/atom are supported
+	rss.list - text file with one feed url per line, rss/rdf/atom are
+	    supported.
+
+	    Comments can be included in the file: any line starting
+	    with a '#' is ignored.  (There can be whitespace before
+	    the '#'.)
+
+	    Also supported are conditions which must be satisfied for
+	    each article to be printed: the conditions for a URL
+	    should be put on the lines following the URL, and indented
+	    (by spaces or tabs).  For instance, to subscribe to the
+	    Volokh Conspiracy weblog, but only to posts by Orin Kerr
+	    or Eugene Volokh, not the twenty or so other
+	    "co-conspirators", you can write:
+
+	    http://volokh.com/feed/
+	        $author eq "Eugene Volokh" or
+	        $author eq "Orin Kerr"
+
+	    The syntax for the condition is Perl syntax; the code uses
+	    Perl's eval() function to evaluate it.  The accessible
+	    variables are $author, $title, $link (a hyperlink to the
+	    web version of the post), and $text (its full text, if
+	    you're lucky).  Since the condition can be arbitrary Perl
+	    code, you can also do other things with it, including
+	    changing any or all of those variables.
 
 Outputs:
-	rss.data - binary file with last states of feeds (Last-modified, Etag
-            and hashes of articles seen)
 	index.html - fresh digest
 	1.html .. 9.html - rotated previous digests
+
+Program state:
+	rss.data - binary file with last states of feeds (Last-modified, Etag
+            and hashes of articles seen)
 
 How to run:
 	./rssagg.pl <DIRECTORY>
 
-When started from terminal it prints a dot after fetching of each url,
+where <DIRECTORY> is where all the above files are located.
+
+When started from the terminal it prints each URL before it is fetched;
 otherwise it's silent (for cronjob).
