@@ -152,6 +152,14 @@ sub xml_must {
 	return $res;
 }
 
+sub xml_link_href_alternate {
+	my ($ref) = @_;
+
+	$$ref =~ m# < link \b [^>]* \b rel=["']alternate["'] [^>]*
+			\b href=["']([^"']*)["'] ([^>]*) > #six ?
+		$1 : undef;
+}
+
 sub xml_link_href {
 	my ($ref) = @_;
 
@@ -202,6 +210,7 @@ sub parse_items {
 	while (my $item = xml_tag ($ref, $tag || 'item')) {
 		my %item;
 		$item{link}  = text_notag (
+			xml_link_href_alternate (\$item) ||
 			xml_link_href (\$item) ||
 			xml_tag (\$item, 'link') ||
 			xml_must (\$item, 'guid')
