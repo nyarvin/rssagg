@@ -96,7 +96,7 @@ HTML
 my @tag_single = qw( br hr img );
 my @tag_double = qw(
 	a b blockquote code em i li ol p pre
-	strike strong table td tr tt ul	font
+	strike strong table td tr tt ul	font del
 );
 my %tag = ((map { $_ => 1 } @tag_single), map { $_ => 2 } @tag_double);
 
