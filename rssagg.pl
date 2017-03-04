@@ -245,7 +245,7 @@ sub parse_rss {
 	my $items = parse_items (\$chan);
 	return {
 		title	=> xml_must (\$chan, 'title'),
-		link	=> xml_must (\$chan, 'link'),
+		link	=> xml_tag (\$chan, 'link') || "",
 		item	=> $items,
 	};
 }
