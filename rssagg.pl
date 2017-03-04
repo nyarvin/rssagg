@@ -340,7 +340,7 @@ sub get_feed {
 
 	my $res = eval {
 		local $SIG{ALRM} = sub { die 'timeout' };
-		alarm 20;
+		alarm 30;
 		print $feed->{url}, "\n" if -t;
 		$ua->get ($feed->{url}, @hdr);
 	};
